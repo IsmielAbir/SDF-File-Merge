@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MIHA SAAS SDF Merger</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="brand">
+                <h1>MIHA SAAS</h1>
+                <p class="subtitle">For Nous</p>
+            </div>
+            <div class="app-title">
+                <h2>SDF File Merger</h2>
+                <p class="version">v1.0</p>
+            </div>
+        </div>
+
+        <hr class="separator">
+
+        <div class="section">
+            <h3><i class="fas fa-cloud-upload-alt"></i> Drag & Drop SDF Files</h3>
+            <div class="drop-zone" id="dropZone">
+                <div class="drop-content">
+                    <i class="fas fa-file-upload"></i>
+                    <h4>Drop SDF files or ZIP here</h4>
+                    <p>Supports .sdf files and .zip archives</p>
+                    <button onclick="document.getElementById('fileInput').click()" class="btn upload-btn">
+                        <i class="fas fa-folder-open"></i> Browse Files
+                    </button>
+                    <input type="file" id="fileInput" multiple accept=".sdf,.zip" style="display: none;">
+                </div>
+                <div class="file-list" id="fileList">
+                </div>
+            </div>
+        </div>
+
+        <div class="section file-list-section" id="fileListSection" style="display: none;">
+            <h3><i class="fas fa-list"></i> Selected Files</h3>
+            <div class="selected-files">
+                <div class="file-count" id="fileCount">0 files selected</div>
+                <button onclick="clearFiles()" class="btn clear-btn">
+                    <i class="fas fa-trash"></i> Clear All
+                </button>
+            </div>
+            <div class="files-container" id="filesContainer">
+            </div>
+        </div>
+
+        <div class="section">
+            <h3><i class="fas fa-spinner"></i> Processing Status</h3>
+            <div class="progress-container">
+                <div class="progress-bar" id="progressBar"></div>
+            </div>
+            <div class="status-info">
+                <p class="status" id="statusText">Ready to merge SDF files</p>
+                <span class="file-count" id="processingCount">0/0 files</span>
+            </div>
+        </div>
+
+        <div class="button-group">
+            <button onclick="startMerge()" class="btn merge-btn" id="mergeBtn">
+                <i class="fas fa-code-branch"></i> Merge SDF Files
+            </button>
+            <button onclick="downloadMergedFile()" class="btn download-btn" id="downloadBtn" disabled>
+                <i class="fas fa-download"></i> Download Merged File
+            </button>
+            <button onclick="resetApp()" class="btn reset-btn">
+                <i class="fas fa-redo"></i> Reset
+            </button>
+        </div>
+
+        <div class="section">
+            <h3><i class="fas fa-terminal"></i> Processing Log</h3>
+            <div class="log-container">
+                <pre id="logText">============================================================
+MIHA SAAS SDF Merger - Ready
+============================================================</pre>
+            </div>
+        </div>
+
+        <hr class="separator">
+        <div class="footer">
+            <p>© 2024 ABS2VEX Software Company | Professional Molecular Data Tools</p>
+            <p class="footer-note">
+                Download the desktop application from 
+                <a href="https://sourceforge.net/projects/your-project/" target="_blank">SourceForge</a> | 
+                <a href="https://github.com/yourusername/sdf-merger" target="_blank">GitHub</a>
+            </p>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
