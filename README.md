@@ -27,7 +27,7 @@
 
 ## 🖥️ Desktop Application Usage
 ### Step 1: Download the Application from SourceForge
-### Official Download Site: https://sourceforge.net/projects/sdfmerge/
+### Official Download Site: https://sourceforge.net/projects/sdf-merger/
 
 ### Step 2: Select Input Folder Path: All .sdf files will be automatically detected
 ### Step 3: Choose Output Location path
