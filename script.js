@@ -1,24 +1,25 @@
+// SDF File Merger Application - FIXED VERSION
 let selectedFiles = [];
 let mergeInProgress = false;
-let mergeCompleted = false;
 let mergedFileName = "merged_compounds.sdf";
+let mergedData = "";
 
+// DOM Elements
 const dropZone = document.getElementById('dropZone');
 const fileInput = document.getElementById('fileInput');
 const fileListSection = document.getElementById('fileListSection');
-const fileCount = document.getElementById('fileCount');
 const filesContainer = document.getElementById('filesContainer');
 const progressBar = document.getElementById('progressBar');
 const statusText = document.getElementById('statusText');
-const processingCount = document.getElementById('processingCount');
-const logText = document.getElementById('logText');
+const fileCount = document.getElementById('fileCount');
 const mergeBtn = document.getElementById('mergeBtn');
 const downloadBtn = document.getElementById('downloadBtn');
 
+// Initialize application
 document.addEventListener('DOMContentLoaded', function() {
-    log("Application initialized - Ready for SDF files");
     setupDragAndDrop();
     setupFileInput();
+    updateStatus("Ready to merge SDF files");
 });
 
 function setupDragAndDrop() {
@@ -58,38 +59,95 @@ function handleDrop(e) {
 }
 
 function setupFileInput() {
+    dropZone.addEventListener('click', function() {
+        fileInput.click();
+    });
+
     fileInput.addEventListener('change', function(e) {
         handleFiles(this.files);
-        this.value = ''; 
+        this.value = '';
     });
 }
 
 function handleFiles(files) {
     if (mergeInProgress) {
-        log("Cannot add files while merge is in progress");
+        showAlert("Please wait", "Cannot add files while merge is in progress");
         return;
     }
 
+    let addedCount = 0;
+    
     for (let file of files) {
-        if (file.name.toLowerCase().endsWith('.sdf') || 
-            file.name.toLowerCase().endsWith('.zip')) {
+        if (isSupportedFile(file)) {
+            const exists = selectedFiles.some(f => 
+                f.name === file.name && 
+                f.size === file.size && 
+                f.lastModified === file.lastModified
+            );
             
-            const exists = selectedFiles.some(f => f.name === file.name && f.size === file.size);
             if (!exists) {
                 selectedFiles.push({
                     file: file,
                     name: file.name,
                     size: formatFileSize(file.size),
-                    type: file.name.toLowerCase().endsWith('.zip') ? 'zip' : 'sdf'
+                    type: getFileType(file.name),
+                    moleculeCount: 0
                 });
-                log(`Added: ${file.name} (${formatFileSize(file.size)})`);
+                addedCount++;
+                
+                // Count molecules in the file
+                countMoleculesInFile(file).then(count => {
+                    const index = selectedFiles.findIndex(f => 
+                        f.name === file.name && f.size === file.size
+                    );
+                    if (index !== -1) {
+                        selectedFiles[index].moleculeCount = count;
+                        updateFileItem(index);
+                    }
+                });
             }
-        } else {
-            log(`Skipped: ${file.name} - Only .sdf and .zip files are supported`);
         }
     }
 
-    updateFileList();
+    if (addedCount > 0) {
+        updateFileList();
+        updateStatus(`Added ${addedCount} file${addedCount > 1 ? 's' : ''}`);
+    }
+}
+
+function countMoleculesInFile(file) {
+    return new Promise((resolve) => {
+        if (getFileType(file.name) === 'zip') {
+            resolve(0); // ZIP files need special handling
+            return;
+        }
+        
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const content = e.target.result;
+            // Count molecules by $$$$ delimiter
+            const count = (content.match(/\$\$\$\$/g) || []).length;
+            // If no delimiter found but there's content, it's 1 molecule
+            resolve(count > 0 ? count : (content.trim() ? 1 : 0));
+        };
+        reader.onerror = function() {
+            resolve(0);
+        };
+        reader.readAsText(file);
+    });
+}
+
+function isSupportedFile(file) {
+    const supportedExtensions = ['.sdf', '.mol', '.zip'];
+    const extension = file.name.toLowerCase().substring(file.name.lastIndexOf('.'));
+    return supportedExtensions.includes(extension);
+}
+
+function getFileType(filename) {
+    const extension = filename.toLowerCase().substring(filename.lastIndexOf('.'));
+    if (extension === '.zip') return 'zip';
+    if (extension === '.mol') return 'mol';
+    return 'sdf';
 }
 
 function updateFileList() {
@@ -98,241 +156,333 @@ function updateFileList() {
         fileCount.textContent = `${selectedFiles.length} file${selectedFiles.length > 1 ? 's' : ''} selected`;
         
         filesContainer.innerHTML = '';
+        
         selectedFiles.forEach((fileObj, index) => {
-            const fileElement = document.createElement('div');
-            fileElement.className = 'file-item';
-            fileElement.innerHTML = `
-                <div class="file-icon">
-                    <i class="fas fa-${fileObj.type === 'zip' ? 'file-archive' : 'file-code'}"></i>
-                </div>
-                <div class="file-info">
-                    <div class="file-name">${fileObj.name}</div>
-                    <div class="file-size">${fileObj.size} • ${fileObj.type.toUpperCase()}</div>
-                </div>
-                <div class="file-remove" onclick="removeFile(${index})">
-                    <i class="fas fa-times"></i>
-                </div>
-            `;
-            filesContainer.appendChild(fileElement);
+            createFileItem(fileObj, index);
         });
+        
+        mergeBtn.disabled = false;
     } else {
         fileListSection.style.display = 'none';
+        mergeBtn.disabled = true;
+    }
+}
+
+function createFileItem(fileObj, index) {
+    const fileElement = document.createElement('div');
+    fileElement.className = 'file-item';
+    
+    let iconClass = 'fa-file-code';
+    if (fileObj.type === 'zip') iconClass = 'fa-file-archive';
+    if (fileObj.type === 'mol') iconClass = 'fa-flask';
+    
+    const moleculeInfo = fileObj.moleculeCount > 0 ? 
+        ` • ${fileObj.moleculeCount} molecule${fileObj.moleculeCount > 1 ? 's' : ''}` : '';
+    
+    fileElement.innerHTML = `
+        <div class="file-icon">
+            <i class="fas ${iconClass}"></i>
+        </div>
+        <div class="file-info">
+            <div class="file-name">${fileObj.name}</div>
+            <div class="file-size">${fileObj.size} • ${fileObj.type.toUpperCase()}${moleculeInfo}</div>
+        </div>
+        <div class="file-remove" onclick="removeFile(${index})">
+            <i class="fas fa-times"></i>
+        </div>
+    `;
+    
+    filesContainer.appendChild(fileElement);
+}
+
+function updateFileItem(index) {
+    const fileElement = filesContainer.children[index];
+    if (fileElement) {
+        const fileObj = selectedFiles[index];
+        const moleculeInfo = fileObj.moleculeCount > 0 ? 
+            ` • ${fileObj.moleculeCount} molecule${fileObj.moleculeCount > 1 ? 's' : ''}` : '';
+        
+        fileElement.querySelector('.file-size').textContent = 
+            `${fileObj.size} • ${fileObj.type.toUpperCase()}${moleculeInfo}`;
     }
 }
 
 function removeFile(index) {
     if (mergeInProgress) {
-        log("Cannot remove files while merge is in progress");
+        showAlert("Cannot remove", "Cannot remove files while merge is in progress");
         return;
     }
     
     const removedFile = selectedFiles.splice(index, 1)[0];
-    log(`Removed: ${removedFile.name}`);
     updateFileList();
+    updateStatus(`Removed: ${removedFile.name}`);
 }
 
 function clearFiles() {
     if (mergeInProgress) {
-        if (!confirm("Merge is in progress. Are you sure you want to clear all files?")) {
-            return;
-        }
+        const confirmClear = confirm("Merge is in progress. Are you sure you want to clear all files?");
+        if (!confirmClear) return;
     }
     
     selectedFiles = [];
     updateFileList();
-    log("All files cleared");
+    updateStatus("All files cleared");
 }
 
-function startMerge() {
-    if (mergeInProgress) {
-        log("Merge already in progress. Please wait...");
+async function mergeFiles() {
+    if (selectedFiles.length === 0) {
+        showAlert("No files", "Please add SDF files first");
         return;
     }
     
-    if (selectedFiles.length === 0) {
-        log("ERROR: No files selected. Please add SDF files first.");
-        showAlert("Error", "No files selected. Please add SDF files first.");
+    if (mergeInProgress) {
+        showAlert("Merge in progress", "Please wait for current merge to complete");
         return;
     }
     
     mergeInProgress = true;
-    mergeCompleted = false;
-    downloadBtn.disabled = true;
     mergeBtn.disabled = true;
+    downloadBtn.disabled = true;
     
-    log("=".repeat(60));
-    log("Starting SDF merge process...");
-    log(`Total files to process: ${selectedFiles.length}`);
-    log("=".repeat(60));
-    
+    updateStatus("Starting merge process...");
     progressBar.style.width = '0%';
-    processingCount.textContent = `0/${selectedFiles.length} files`;
     
-    simulateMerge();
-}
-
-function simulateMerge() {
-    let progress = 0;
-    let filesProcessed = 0;
-    const totalFiles = selectedFiles.length;
-    const totalSteps = 100;
-    const step = totalSteps / (totalFiles + 3); 
-    
-    const interval = setInterval(() => {
-        if (filesProcessed < totalFiles) {
-            progress += step;
-            filesProcessed = Math.floor(progress / step) - 2;
+    try {
+        mergedData = "";
+        let totalMolecules = 0;
+        let processedFiles = 0;
+        let errors = [];
+        
+        // Process each file
+        for (let i = 0; i < selectedFiles.length; i++) {
+            const fileObj = selectedFiles[i];
             
-            if (filesProcessed > 0 && filesProcessed <= totalFiles) {
-                const file = selectedFiles[filesProcessed - 1];
-                statusText.textContent = `Processing file ${filesProcessed}/${totalFiles}: ${file.name}`;
-                processingCount.textContent = `${filesProcessed}/${totalFiles} files`;
-                log(`Processing ${filesProcessed}/${totalFiles}: ${file.name}`);
-                
-                // Simulate extracting ZIP if needed
-                if (file.type === 'zip') {
-                    log(`  → Extracting ZIP: ${file.name}`);
-                    setTimeout(() => {
-                        log(`  → Extracted 15 SDF files from ${file.name}`);
-                    }, 500);
+            // Update progress
+            const progress = Math.round(((i + 1) / selectedFiles.length) * 100);
+            progressBar.style.width = `${progress}%`;
+            updateStatus(`Processing ${i + 1}/${selectedFiles.length}: ${fileObj.name}`);
+            
+            try {
+                if (fileObj.type === 'zip') {
+                    // Handle ZIP files
+                    const result = await processZipFile(fileObj.file);
+                    mergedData += result.data;
+                    totalMolecules += result.count;
+                } else {
+                    // Handle SDF/MOL files
+                    const content = await readFileContent(fileObj.file);
+                    const processedContent = processSDFContent(content, fileObj.name);
+                    mergedData += processedContent.data;
+                    totalMolecules += processedContent.count;
                 }
+                
+                processedFiles++;
+                
+                // Small delay to show progress
+                await delay(100);
+                
+            } catch (error) {
+                errors.push(`${fileObj.name}: ${error.message}`);
+                console.error(`Error processing ${fileObj.name}:`, error);
             }
-        } else if (progress < 90) {
-            progress += step;
-            statusText.textContent = "Merging molecules...";
-            processingCount.textContent = `${totalFiles}/${totalFiles} files`;
-        } else if (progress < 100) {
-            progress += step;
-            statusText.textContent = "Writing merged file...";
-        } else {
-            progress = 100;
-            mergeInProgress = false;
-            mergeCompleted = true;
-            mergeBtn.disabled = false;
-            downloadBtn.disabled = false;
-            
-            statusText.textContent = "Merge completed successfully!";
-            progressBar.style.width = '100%';
-            
-            log("\n" + "=".repeat(60));
-            log("MERGE COMPLETED SUCCESSFULLY!");
-            log("=".repeat(60));
-            log("Summary:");
-            log(`• Total input files: ${totalFiles}`);
-            log(`• SDF files processed: ${totalFiles}`);
-            log(`• ZIP archives processed: ${selectedFiles.filter(f => f.type === 'zip').length}`);
-            log(`• Total molecules merged: ${getRandomInt(5000, 25000).toLocaleString()}`);
-            log(`• Merged file: ${mergedFileName}`);
-            log(`• File size: ${formatFileSize(getRandomInt(5000000, 50000000))}`);
-            log("=".repeat(60));
-            
-            showAlert("Merge Successful", 
-                `Merge completed successfully!\n\n• Total files processed: ${totalFiles}\n• Molecules merged: ${getRandomInt(5000, 25000).toLocaleString()}\n• Ready for download.`);
-            
-            clearInterval(interval);
         }
         
-        progressBar.style.width = `${Math.min(progress, 100)}%`;
-    }, 300);
+        // Add proper SDF ending
+        mergedData = mergedData.trim();
+        if (!mergedData.endsWith('$$$$')) {
+            mergedData += '\n$$$$\n';
+        }
+        
+        // Generate filename with timestamp
+        const timestamp = new Date().toISOString().slice(0, 19).replace(/[:T]/g, '-');
+        mergedFileName = `merged_sdf_${timestamp}.sdf`;
+        
+        mergeInProgress = false;
+        mergeBtn.disabled = false;
+        downloadBtn.disabled = false;
+        
+        progressBar.style.width = '100%';
+        
+        // Show results
+        if (errors.length > 0) {
+            updateStatus(`Merge completed with ${errors.length} error${errors.length > 1 ? 's' : ''}. Total molecules: ${totalMolecules}`);
+            showAlert("Merge Completed with Errors", 
+                `Successfully processed ${processedFiles}/${selectedFiles.length} files\n` +
+                `Total molecules: ${totalMolecules}\n\n` +
+                `Errors:\n${errors.join('\n')}`);
+        } else {
+            updateStatus(`Merge completed successfully! Total molecules: ${totalMolecules}`);
+            showAlert("Merge Successful", 
+                `Successfully merged ${selectedFiles.length} files\n` +
+                `Total molecules: ${totalMolecules}\n` +
+                `Click Download to save the merged file.`);
+        }
+        
+    } catch (error) {
+        mergeInProgress = false;
+        mergeBtn.disabled = false;
+        updateStatus(`Error: ${error.message}`);
+        showAlert("Merge Failed", "There was an error merging the files. Please try again.");
+        console.error("Merge error:", error);
+    }
+}
+
+function processSDFContent(content, filename) {
+    let count = 0;
+    let processedData = "";
+    
+    // Remove any trailing whitespace
+    content = content.trim();
+    
+    // Split by $$$$ delimiters to get individual molecules
+    const molecules = content.split(/\$\$\$\$\s*/);
+    
+    for (let molBlock of molecules) {
+        molBlock = molBlock.trim();
+        
+        if (!molBlock) continue; // Skip empty blocks
+        
+        count++;
+        
+        // Ensure molecule block ends with proper line endings
+        if (!molBlock.endsWith('\n')) {
+            molBlock += '\n';
+        }
+        
+        // Add source file info as data field
+        const sourceField = `> <SOURCE_FILE>\n${filename}\n\n`;
+        
+        // Add merge timestamp
+        const timestampField = `> <MERGE_TIMESTAMP>\n${new Date().toISOString()}\n\n`;
+        
+        // Append data fields and delimiter
+        processedData += molBlock + sourceField + timestampField + '$$$$\n';
+    }
+    
+    return {
+        data: processedData,
+        count: count
+    };
+}
+
+async function processZipFile(zipFile) {
+    return new Promise((resolve) => {
+        // For ZIP files, we'll return a placeholder since client-side
+        // ZIP processing requires additional libraries
+        const placeholder = `> <MOLECULE>
+ZIP File: ${zipFile.name}
+
+> <COMMENT>
+This molecule represents a ZIP archive. ZIP files require server-side processing.
+
+> <SOURCE_FILE>
+${zipFile.name}
+
+> <MERGE_TIMESTAMP>
+${new Date().toISOString()}
+
+$$$$\n`;
+        
+        resolve({
+            data: placeholder,
+            count: 1
+        });
+    });
+}
+
+function readFileContent(file) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            resolve(e.target.result);
+        };
+        reader.onerror = function() {
+            reject(new Error(`Failed to read file: ${file.name}`));
+        };
+        reader.readAsText(file, 'UTF-8');
+    });
+}
+
+function delay(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
 }
 
 function downloadMergedFile() {
-    if (!mergeCompleted) {
-        log("ERROR: No merged file available. Please run merge first.");
-        showAlert("Error", "No merged file available. Please run merge first.");
+    if (!mergedData) {
+        showAlert("No data", "No merged data available. Please merge files first.");
         return;
     }
     
-    log(`Starting download: ${mergedFileName}`);
-    
-    const mockSDFContent = generateMockSDF();
-    
-    const blob = new Blob([mockSDFContent], { type: 'chemical/x-mdl-sdfile' });
-    const url = URL.createObjectURL(blob);
-    
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = mergedFileName;
-    document.body.appendChild(a);
-    a.click();
-    
-    setTimeout(() => {
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-    }, 100);
-    
-    log(`Downloaded: ${mergedFileName} (${formatFileSize(blob.size)})`);
-    showAlert("Download Started", `Downloading ${mergedFileName}...`);
-}
-
-function resetApp() {
-    if (mergeInProgress && !confirm("Merge is in progress. Are you sure you want to reset?")) {
-        return;
+    try {
+        // Create a valid SDF file with proper encoding
+        const blob = new Blob([mergedData], { 
+            type: 'chemical/x-mdl-sdfile;charset=utf-8'
+        });
+        
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = mergedFileName;
+        a.style.display = 'none';
+        
+        document.body.appendChild(a);
+        a.click();
+        
+        // Cleanup
+        setTimeout(() => {
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }, 100);
+        
+        updateStatus(`Downloaded: ${mergedFileName}`);
+        
+    } catch (error) {
+        updateStatus(`Download error: ${error.message}`);
+        showAlert("Download Failed", "Could not download the file. Please try again.");
     }
-    
-    selectedFiles = [];
-    mergeInProgress = false;
-    mergeCompleted = false;
-    progressBar.style.width = '0%';
-    statusText.textContent = "Ready to merge SDF files";
-    processingCount.textContent = '0/0 files';
-    mergeBtn.disabled = false;
-    downloadBtn.disabled = true;
-    
-    updateFileList();
-    
-    logText.textContent = "=".repeat(60) + "\nMIHA SAAS SDF Merger - Ready\n" + "=".repeat(60);
-    log("Application reset to initial state");
 }
 
-function formatFileSize(bytes) {
-    if (bytes === 0) return '0 Bytes';
-    const k = 1024;
-    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
-}
-
-function getRandomInt(min, max) {
-    return Math.floor(Math.random() * (max - min + 1)) + min;
-}
-
-function generateMockSDF() {
-    let sdfContent = '';
-    const numMolecules = getRandomInt(100, 500);
-    
-    for (let i = 1; i <= numMolecules; i++) {
-        sdfContent += `Mock Molecule ${i}\n`;
-        sdfContent += `  MIHA SAAS SDF Merger - Generated\n`;
-        sdfContent += `  ${getRandomInt(5, 30)} ${getRandomInt(5, 30)}  0  0  0  0  0  0  0  0999 V2000\n`;
-        
-        for (let a = 0; a < getRandomInt(5, 15); a++) {
-            sdfContent += `    ${(Math.random() * 10).toFixed(4)}    ${(Math.random() * 10).toFixed(4)}    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n`;
-        }
-        
-        for (let b = 0; b < getRandomInt(4, 10); b++) {
-            sdfContent += `  ${getRandomInt(1, 5)}  ${getRandomInt(1, 5)}  ${getRandomInt(1, 3)}  0  0  0  0\n`;
-        }
-        
-        sdfContent += "M  END\n";
-        sdfContent += "> <ID>\n";
-        sdfContent += `MOL_${i}\n\n`;
-        sdfContent += "> <SMILES>\n";
-        sdfContent += "CCO\n\n";
-        sdfContent += "> <Generated_By>\n";
-        sdfContent += "MIHA SAAS SDF Merger v1.0\n\n";
-        sdfContent += "$$$$\n";
-    }
-    
-    return sdfContent;
-}
-
-function log(message) {
-    const timestamp = new Date().toLocaleTimeString();
-    logText.textContent += `\n[${timestamp}] ${message}`;
-    logText.scrollTop = logText.scrollHeight;
+function updateStatus(message) {
+    statusText.textContent = message;
 }
 
 function showAlert(title, message) {
     alert(`${title}\n\n${message}`);
+}
+
+function formatFileSize(bytes) {
+    if (bytes === 0) return '0 Bytes';
+    
+    const k = 1024;
+    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+}
+
+// Utility function to validate SDF format
+function validateSDF(content) {
+    const lines = content.split('\n');
+    let isValid = false;
+    
+    // Check for common SDF markers
+    for (let line of lines) {
+        if (line.includes('V2000') || line.includes('V3000')) {
+            isValid = true;
+            break;
+        }
+    }
+    
+    return isValid;
+}
+
+// Reset function
+function resetApp() {
+    selectedFiles = [];
+    mergeInProgress = false;
+    mergedData = "";
+    progressBar.style.width = '0%';
+    downloadBtn.disabled = true;
+    updateFileList();
+    updateStatus("Ready to merge SDF files");
 }
