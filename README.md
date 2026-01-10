@@ -2,8 +2,8 @@
 
 # Features
 ## Desktop Application (Python/Tkinter)
-🖥️ Intuitive GUI - User-friendly interface
-📊 Batch Processing - Merge several numbers of SDF files simultaneously
+### 🖥️ Intuitive GUI - User-friendly interface
+### 📊 Batch Processing - Merge several numbers of SDF files simultaneously
 🚀 Real-time Progress - Visual progress bar and detailed logging
 🎯 Works on Windows
 
