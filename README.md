@@ -1,3 +1,5 @@
-MIHA SAAS SDF Merger
+# MIHA SAAS SDF Merger
 
 Tool for merging Chemical Structure Data Files (SDF) used in computational chemistry and drug discovery.
+
+<div align="center"> <h1>MIHA SAAS SDF Merger</h1> <h3>Tool for Merging Chemical Structure Data Files</h3> <p> <img src="https://img.shields.io/badge/python-3.8+-blue.svg?logo=python&logoColor=white" alt="Python 3.8+"> <img src="https://img.shields.io/badge/license-MIT-green.svg" alt="License MIT"> <img src="https://img.shields.io/badge/platform-windows%20%7C%20macos%20%7C%20linux%20%7C%20web-lightgrey" alt="Platform"> <img src="https://img.shields.io/badge/rdkit-cheminformatics-orange" alt="RDKit"> </p> <p> <b>Desktop and web applications for merging SDF files used in computational chemistry and drug discovery research.</b> </p> <p> <a href="#features">Features</a> • <a href="#quick-start">Quick Start</a> • <a href="#installation">Installation</a> • <a href="#usage">Usage</a> • <a href="#documentation">Documentation</a> • <a href="#contributing">Contributing</a> </p> </div>
