@@ -1,5 +1,20 @@
-SDF Merger: A Desktop and Web Tool for Merging Chemical Structure Data Files
-Md. Ismiel Hossen Abir – Independent Researcher
+---
+title: 'SDF Merger: A Desktop and Web Tool for Merging Chemical Structure Data Files'
+tags:
+  - Python
+  - JavaScript
+  - Cheminformatics
+  - Computational Chemistry
+author:
+  - name: Md. Ismiel Hossen Abir
+    email: ismielabir286@gmail.com
+    correspondance: "yes"
+    orcid: "0009-0000-3451-9490"
+affiliations:
+  - name: Independent Researcher 
+date: 10 January 2026
+bibliography: paper.bib
+---
 
 # Summary
 The SDF Merger is a cross-platform, simple tool designed to efficiently merge Structure-Data File (SDF) files. SDF files are widely used in cheminformatics, computational chemistry, and drug discovery research. SDF files store molecular structures with their properties. Researchers used SDF files for diverse workflows such as virtual screening, molecular docking, and high-throughput compound testing. For molecular docking needs, used large number of ligand files which can be SDF files. Managing this large number of SDF files manually is time-consuming and chance to errors. Therefore, creating an SDF merger tool is required for a reliable and accessible use. 
