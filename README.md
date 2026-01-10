@@ -19,15 +19,15 @@
 
 ## For Desktop Application 
 ### For Desktop (Windows Executable)
-### Download the latest .exe from [![SourceForge Download](https://img.shields.io/sourceforge/dm/sdfmerge?label=SourceForge%20Downloads)](https://sourceforge.net/projects/sdf-merger/)
+### Download the latest .exe from https://sourceforge.net/projects/sdf-merger/
 ### Double-click to run (no installation needed)
 
 ## For Web Version
 ### Visit: [![Live Website](https://img.shields.io/badge/Live-Website-blue)](https://ismielabir.github.io/SDF-File-Merge/)
 
 ## 🖥️ Desktop Application Usage
-### Step 1: Download the Application from SourceForge: [![SourceForge Download](https://img.shields.io/sourceforge/dm/sdfmerge?label=SourceForge%20Downloads)](https://sourceforge.net/projects/sdf-merger/)
-### Official Download: https://sourceforge.net/projects/sdfmerge/
+### Step 1: Download the Application from SourceForge
+### Official Download Site: https://sourceforge.net/projects/sdfmerge/
 
 ### Step 2: Select Input Folder Path: All .sdf files will be automatically detected
 ### Step 3: Choose Output Location path
