@@ -33,10 +33,21 @@
 ### Step 3: Choose Output Location path
 ### Step 4: Start Merge Process
 
-## 🌐 Web Application Usage
+## 🌐 Web Application Usage from direct webpage: https://ismielabir.github.io/SDF-File-Merge/
+### Drag & Drop: Drop SDF/ZIP files directly
+### Real-time Processing: Visual progress indicator
+### No Uploads: All processing happens locally in your browser
+### Instant Download: Get merged SDF file immediately
 
+## 📁 File Formats Supported
+## Input
+### .sdf: Structure-Data File (standard format)
+### .zip: Archives containing SDF files (automatically extracted)
 
+## Output
+### .sdf: Single merged Structure-Data File preserving all molecular properties
 
+## 🤝 Contributing: welcome contributions! 
+## 📄 License: This project is licensed under the MIT License - see the LICENSE file for details.
 
-
-
+## 📝 Citation: If you use SDF Merger in your research, please cite.
