@@ -51,3 +51,11 @@
 ## 📄 License: This project is licensed under the MIT License - see the LICENSE file for details.
 
 ## 📝 Citation: If you use SDF Merger in your research, please cite.
+
+## 🙏 Acknowledgments
+### RDKit Community for the excellent cheminformatics toolkit
+### Python Software Foundation for the programming language and libraries
+### Contributors who help improve this tool
+
+## 🌟 Star History
+https://api.star-history.com/svg?repos=ismielabir/miha-saas-sdf-merger&type=Date
