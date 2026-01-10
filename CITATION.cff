@@ -1,1 +1,7 @@
-
+@software{sdfmerger2026,
+  author       = {Md. Ismiel Hossen Abir},
+  title        = {SDF Merger: A Desktop and Web Tool for Merging Chemical Structure Data Files (Version 1.0)},
+  url          = {https://github.com/IsmielAbir/SDF-File-Merge},
+  year         = {2026},
+  note         = {Desktop and Web Tool},
+}
