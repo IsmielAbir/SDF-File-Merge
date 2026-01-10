@@ -23,4 +23,4 @@
 ### Double-click to run (no installation needed)
 
 ## For Web Version
-### Visit: [![Live Website](https://img.shields.io/badge/Live-Demo-blue)](https://ismielabir.github.io/SDF-File-Merge/)
+### Visit: [![Live Website](https://img.shields.io/badge/Live-Website-blue)](https://ismielabir.github.io/SDF-File-Merge/)
