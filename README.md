@@ -19,7 +19,7 @@
 
 ## For Desktop Application 
 ### For Desktop (Windows Executable)
-### Download the latest .exe from [![SourceForge Download](https://img.shields.io/sourceforge/dm/sdfmerge?label=SourceForge%20Downloads)](https://sourceforge.net/projects/sdfmerge/)
+### Download the latest .exe from [![SourceForge Download](https://img.shields.io/sourceforge/dm/sdfmerge?label=SourceForge%20Downloads)](https://sourceforge.net/projects/sdf-merger/)
 ### Double-click to run (no installation needed)
 
 ## For Web Version
@@ -34,7 +34,7 @@
 ### Step 4: Start Merge Process
 
 ## 🌐 Web Application Usage 
-### Use direct from webpage: https://sourceforge.net/projects/sdf-merger/
+### Use direct from webpage: https://ismielabir.github.io/SDF-File-Merge/
 ### Drag & Drop: Drop SDF/ZIP files directly
 ### Real-time Processing: Visual progress indicator
 ### No Uploads: All processing happens locally in your browser
