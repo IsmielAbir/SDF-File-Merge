@@ -1,4 +1,4 @@
-<div align="center"> <h1>MIHA SAAS SDF Merger</h1> <h3>Tool for Merging Chemical Structure Data Files</h3> <p> <b>Desktop and web applications for merging SDF files used in computational chemistry and drug discovery research.</b> </p> <\div>
+<h1>MIHA SAAS SDF Merger</h1> <h3>Tool for Merging Chemical Structure Data Files</h3> <p> <b>Desktop and web applications for merging SDF files used in computational chemistry and drug discovery research.</b> </p>
 
 # Features
 ## Desktop Application (Python/Tkinter)
