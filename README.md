@@ -1,6 +1,6 @@
 <h1>MIHA SAAS SDF Merger</h1> <h3>Tool for Merging Chemical Structure Data Files</h3> <p> <b>Desktop and web applications for merging SDF files used in computational chemistry and drug discovery research.</b> </p>
 
-DOI: https://doi.org/10.5281/zenodo.18290805
+DOI: https://doi.org/10.5281/zenodo.18291398
 
 # Features
 ## Desktop Application (Python/Tkinter)
@@ -54,7 +54,7 @@ DOI: https://doi.org/10.5281/zenodo.18290805
 ### 📄 License: This project is licensed under the MIT License - see the LICENSE file for details.
 
 ### 📝 Citation
-Md. Ismiel Hossen, A. (2026). SDF Merger: A Desktop and Web Tool for Merging Chemical Structure Data Files (v1.0). Zenodo. https://doi.org/10.5281/zenodo.18290805
+Md. Ismiel Hossen, A. (2026). SDF Merger: A Desktop and Web Tool for Merging Chemical Structure Data Files (v1.1). Zenodo. https://doi.org/10.5281/zenodo.18291398
 
 ## 🙏 Acknowledgments
 ### RDKit Community for the excellent cheminformatics toolkit
