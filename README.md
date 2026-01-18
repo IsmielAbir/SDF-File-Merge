@@ -53,7 +53,7 @@ DOI: https://doi.org/10.5281/zenodo.18290805
 ### 🤝 Contributing: welcome contributions! 
 ### 📄 License: This project is licensed under the MIT License - see the LICENSE file for details.
 
-### 📝 Citation: If you use SDF Merger in your research, cite 
+### 📝 Citation
 Md. Ismiel Hossen, A. (2026). SDF Merger: A Desktop and Web Tool for Merging Chemical Structure Data Files (v1.0). Zenodo. https://doi.org/10.5281/zenodo.18290805
 
 ## 🙏 Acknowledgments
