@@ -56,6 +56,5 @@
 ## 🙏 Acknowledgments
 ### RDKit Community for the excellent cheminformatics toolkit
 ### Python Software Foundation for the programming language and libraries
-### Contributors who help improve this tool
 
 ## Thank you.
