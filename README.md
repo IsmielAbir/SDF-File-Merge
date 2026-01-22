@@ -57,7 +57,7 @@
 
 The SDF Merger software is described in the following preprint:
 
-Md. Ismiel Hossen Abir. (2026). *SDF Merger: A Desktop and Web Tool for Merging Chemical Structure Data Files. Zenodo. [DOI: 10.5281/zenodo.18337026](https://doi.org/10.5281/zenodo.18337026)
+Md. Ismiel Hossen Abir. (2026). SDF Merger: A Desktop and Web Tool for Merging Chemical Structure Data Files. Zenodo. [DOI: 10.5281/zenodo.18337026](https://doi.org/10.5281/zenodo.18337026)
 
 ### Tool
 The archived software release is available on Zenodo
