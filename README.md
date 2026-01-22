@@ -1,7 +1,5 @@
 <h1>MIHA SAAS SDF Merger</h1> <h3>Tool for Merging Chemical Structure Data Files</h3> <p> <b>Desktop and web applications for merging SDF files used in computational chemistry and drug discovery research.</b> </p>
 
-DOI: https://doi.org/10.5281/zenodo.18291398
-
 # Features
 ## Desktop Application (Python/Tkinter)
 ### 🖥️ Intuitive GUI - User-friendly interface
